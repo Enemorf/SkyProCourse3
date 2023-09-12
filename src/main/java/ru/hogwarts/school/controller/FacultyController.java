@@ -39,7 +39,7 @@ public class FacultyController
     @PutMapping()
     public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty)
     {
-        return ResponseEntity.ok(facultyService.changeFaculty(faculty.getId(), faculty));
+        return ResponseEntity.ok(facultyService.changeFaculty(faculty));
     }
 
     @GetMapping("/sortByColor/{color}")

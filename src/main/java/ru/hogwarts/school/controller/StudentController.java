@@ -20,8 +20,7 @@ public class StudentController
     @PostMapping ()
     public ResponseEntity<Student> createStudent(@RequestBody Student student)
     {
-        studentService.addStudent(student);
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(studentService.addStudent(student));
     }
 
     @GetMapping("{id}")
@@ -39,7 +38,7 @@ public class StudentController
     @PutMapping()
     public ResponseEntity<Student> updateStudent(@RequestBody Student student)
     {
-        return ResponseEntity.ok(studentService.changeStudent(student.getId(), student));
+        return ResponseEntity.ok(studentService.changeStudent(student));
     }
 
     @GetMapping("/sort/{age}")
