@@ -20,26 +20,41 @@ public class StudentService
 
     public Student addStudent(Student student)
     {
+        if(student == null)
+            return null;
+
         studentRepository.save(student);
         return student;
     }
 
-    public Student getStudent(long id)
+    public Student getStudent(Long id)
     {
+        if(studentRepository.findById(id).isEmpty())
+            return null;
+
         return studentRepository.findById(id).get();
     }
 
-    public Student removeStudent(long id)
+    public Student removeStudent(Long id)
     {
-        Student tmpStd = studentRepository.findById(id).get();
+        if(studentRepository.findById(id).isEmpty())
+            return null;
+
+        Student tmp = studentRepository.findById(id).get();
         studentRepository.deleteById(id);
-        return tmpStd;
+        return tmp;
     }
 
-    public Student changeStudent( Student newStudent)
+    public Student changeStudent(Student newStudent)
     {
-        studentRepository.save(newStudent);
-        return newStudent;
+        if(studentRepository.findById(newStudent.getId()).isEmpty())
+            return null;
+        Student tmp = studentRepository.findById(newStudent.getId()).get();
+        tmp.setName(newStudent.getName());
+        tmp.setAge(newStudent.getAge());
+
+        studentRepository.save(tmp);
+        return tmp;
     }
 
     public List<Student> sortByAge(int age)

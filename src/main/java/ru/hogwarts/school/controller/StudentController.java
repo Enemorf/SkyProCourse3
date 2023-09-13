@@ -17,32 +17,42 @@ public class StudentController
     {
         this.studentService = studentService;
     }
-    @PostMapping ()
+    @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student)
     {
+        if(student == null)
+            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(studentService.addStudent(student));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Student> getStudent(@PathVariable Long id)
     {
-        return ResponseEntity.ok(studentService.getStudent(id));
+        Student tmpStudent = studentService.getStudent(id);
+        if(tmpStudent == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(tmpStudent);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id)
     {
+        Student tmpStudent = studentService.getStudent(id);
+        if(tmpStudent == null)
+            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(studentService.removeStudent(id));
     }
 
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<Student> updateStudent(@RequestBody Student student)
     {
+        if(student == null || studentService.getStudent(student.getId()) == null)
+            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(studentService.changeStudent(student));
     }
 
-    @GetMapping("/sort/{age}")
-    public List<Student> getStudentByAge(@PathVariable int age)
+    @GetMapping("/sortByAge")
+    public List<Student> getStudentByAge (@RequestParam(name = "age") int age)
     {
         return studentService.sortByAge(age);
     }

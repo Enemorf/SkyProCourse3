@@ -20,26 +20,38 @@ public class FacultyService
 
     public Faculty addFaculty(Faculty faculty)
     {
+        if(faculty == null)
+            return null;
+
         facultyRepository.save(faculty);
         return faculty;
     }
 
-    public Faculty getFaculty(long id)
+    public Faculty getFaculty(Long id)
     {
+        if(facultyRepository.findById(id).isEmpty())
+            return null;
         return facultyRepository.findById(id).get();
     }
 
     public Faculty removeFaculty(long id)
     {
-        Faculty tmpFacl = facultyRepository.findById(id).get();
+        if(facultyRepository.findById(id).isEmpty())
+            return null;
+        Faculty tmp = facultyRepository.findById(id).get();
         facultyRepository.deleteById(id);
-        return tmpFacl;
+        return tmp;
     }
 
     public Faculty changeFaculty(Faculty newFaculty)
     {
-        facultyRepository.save(newFaculty);
-        return newFaculty;
+        if(facultyRepository.findById(newFaculty.getId()).isEmpty())
+            return null;
+        Faculty tmp = facultyRepository.findById(newFaculty.getId()).get();
+        tmp.setName(newFaculty.getName());
+        tmp.setColor(newFaculty.getColor());
+        facultyRepository.save(tmp);
+        return tmp;
     }
 
     public List<Faculty> sortByColor(String color)
