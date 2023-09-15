@@ -2,52 +2,56 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class FacultyService
 {
-    private final Map<Long, Faculty> facultyBase = new HashMap<>();
-    private int count;
+    private final FacultyRepository facultyRepository;
+
+    public FacultyService (FacultyRepository facultyRepository)
+    {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Faculty addFaculty(Faculty faculty)
     {
-        facultyBase.put(faculty.getId(), faculty);
-        count++;
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
-    public Faculty addFaculty(long id, String name, String color)
+    public Faculty getFaculty(Long id)
     {
-        Faculty tmpFacl = new Faculty(id,name,color);
-        facultyBase.put(id,tmpFacl);
-        count++;
-        return tmpFacl;
+        return facultyRepository.findById(id).orElse(null);
     }
 
-    public Faculty getFaculty(long id)
+    public Faculty removeFaculty (Long id)
     {
-        return facultyBase.get(id);
+        return facultyRepository.findById(id)
+                .map(faculty ->
+                {
+                    facultyRepository.deleteById(faculty.getId());
+                    return faculty;
+                })
+                .orElse(null);
     }
 
-    public Faculty removeFaculty(long id)
+    public Faculty changeFaculty(Faculty newFaculty)
     {
-        Faculty tmpFacl = facultyBase.get(id);
-        facultyBase.remove(id);
-        return tmpFacl;
-    }
-
-    public Faculty changeFaculty(long id, Faculty newFaculty)
-    {
-        facultyBase.replace(id, newFaculty);
-        return newFaculty;
+        return facultyRepository.findById(newFaculty.getId())
+                .map(faculty ->
+                {
+                    faculty.setName(newFaculty.getName());
+                    faculty.setColor(newFaculty.getColor());
+                    return facultyRepository.save(faculty);
+                })
+                .orElse(null);
     }
 
     public List<Faculty> sortByColor(String color)
     {
-        return facultyBase.values().stream().filter(fcl -> fcl.getColor().contains(color)).toList();
+        return facultyRepository.findByColor(color);
     }
 }

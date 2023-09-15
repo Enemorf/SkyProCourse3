@@ -2,52 +2,54 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StudentService
 {
-    private final Map<Long,Student> studentBase = new HashMap<>();
-    private int count = 0;
+    private final StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository)
+    {
+        this.studentRepository = studentRepository;
+    }
 
     public Student addStudent(Student student)
     {
-        studentBase.put(student.getId(), student);
-        count++;
-        return student;
+        return studentRepository.save(student);
     }
 
-    public Student addStudent(long id, String name, int age)
+    public Student getStudent(Long id)
     {
-        Student tmpStd = new Student(id,name,age);
-        studentBase.put(id, tmpStd);
-        count++;
-        return tmpStd;
+        return studentRepository.findById(id).orElse(null);
     }
 
-    public Student getStudent(long id)
+    public Student removeStudent(Long id)
     {
-        return studentBase.get(id);
+        return studentRepository.findById(id)
+                .map(student -> {
+                    studentRepository.deleteById(student.getId());
+                    return student;
+                })
+                .orElse(null);
     }
 
-    public Student removeStudent(long id)
+    public Student changeStudent(Student newStudent)
     {
-        Student tmpStd = studentBase.get(id);
-        studentBase.remove(id);
-        return tmpStd;
-    }
-
-    public Student changeStudent(long id, Student newStudent)
-    {
-        studentBase.replace(id, newStudent);
-        return newStudent;
+        return studentRepository.findById(newStudent.getId())
+                .map( student ->
+                {
+                    student.setName(newStudent.getName());
+                    student.setAge(newStudent.getAge());
+                    return studentRepository.save(student);
+                })
+                .orElse(null);
     }
 
     public List<Student> sortByAge(int age)
     {
-        return studentBase.values().stream().filter(std -> std.getAge()>=age).toList();
+        return studentRepository.findByAge(age);
     }
 }
