@@ -21,36 +21,40 @@ public class FacultyController
     @PostMapping
     public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty)
     {
-        if(faculty == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(facultyService.addFaculty(faculty));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getStudent(@PathVariable Long id)
     {
-        Faculty tmpFaculty = facultyService.getFaculty(id);
-        if(tmpFaculty == null)
+        var tmpFaculty = facultyService.getFaculty(id);
+        if(tmpFaculty == null) {
             return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(tmpFaculty);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> deleteStudent(@PathVariable Long id)
     {
-        Faculty tmpFaculty = facultyService.getFaculty(id);
-        if(tmpFaculty == null)
+        var tmpFaculty = facultyService.getFaculty(id);
+        if(tmpFaculty == null) {
             return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(facultyService.removeFaculty(id));
     }
 
     @PutMapping
     public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty)
     {
-        if(faculty == null || facultyService.getFaculty(faculty.getId()) == null)
-            return ResponseEntity.notFound().build();
+        var tmp = facultyService.changeFaculty(faculty);
 
-        return ResponseEntity.ok(facultyService.changeFaculty(faculty));
+        if(tmp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        else {
+            return ResponseEntity.ok(tmp);
+        }
     }
 
     @GetMapping("/sortByColor")

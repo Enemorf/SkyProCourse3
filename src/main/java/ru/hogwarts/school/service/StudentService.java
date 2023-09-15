@@ -4,9 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StudentService
@@ -20,41 +18,34 @@ public class StudentService
 
     public Student addStudent(Student student)
     {
-        if(student == null)
-            return null;
-
-        studentRepository.save(student);
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student getStudent(Long id)
     {
-        if(studentRepository.findById(id).isEmpty())
-            return null;
-
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Student removeStudent(Long id)
     {
-        if(studentRepository.findById(id).isEmpty())
-            return null;
-
-        Student tmp = studentRepository.findById(id).get();
-        studentRepository.deleteById(id);
-        return tmp;
+        return studentRepository.findById(id)
+                .map(student -> {
+                    studentRepository.deleteById(student.getId());
+                    return student;
+                })
+                .orElse(null);
     }
 
     public Student changeStudent(Student newStudent)
     {
-        if(studentRepository.findById(newStudent.getId()).isEmpty())
-            return null;
-        Student tmp = studentRepository.findById(newStudent.getId()).get();
-        tmp.setName(newStudent.getName());
-        tmp.setAge(newStudent.getAge());
-
-        studentRepository.save(tmp);
-        return tmp;
+        return studentRepository.findById(newStudent.getId())
+                .map( student ->
+                {
+                    student.setName(newStudent.getName());
+                    student.setAge(newStudent.getAge());
+                    return studentRepository.save(student);
+                })
+                .orElse(null);
     }
 
     public List<Student> sortByAge(int age)

@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class FacultyService
@@ -20,38 +19,35 @@ public class FacultyService
 
     public Faculty addFaculty(Faculty faculty)
     {
-        if(faculty == null)
-            return null;
-
-        facultyRepository.save(faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty getFaculty(Long id)
     {
-        if(facultyRepository.findById(id).isEmpty())
-            return null;
-        return facultyRepository.findById(id).get();
+        return facultyRepository.findById(id).orElse(null);
     }
 
-    public Faculty removeFaculty(long id)
+    public Faculty removeFaculty (Long id)
     {
-        if(facultyRepository.findById(id).isEmpty())
-            return null;
-        Faculty tmp = facultyRepository.findById(id).get();
-        facultyRepository.deleteById(id);
-        return tmp;
+        return facultyRepository.findById(id)
+                .map(faculty ->
+                {
+                    facultyRepository.deleteById(faculty.getId());
+                    return faculty;
+                })
+                .orElse(null);
     }
 
     public Faculty changeFaculty(Faculty newFaculty)
     {
-        if(facultyRepository.findById(newFaculty.getId()).isEmpty())
-            return null;
-        Faculty tmp = facultyRepository.findById(newFaculty.getId()).get();
-        tmp.setName(newFaculty.getName());
-        tmp.setColor(newFaculty.getColor());
-        facultyRepository.save(tmp);
-        return tmp;
+        return facultyRepository.findById(newFaculty.getId())
+                .map(faculty ->
+                {
+                    faculty.setName(newFaculty.getName());
+                    faculty.setColor(newFaculty.getColor());
+                    return facultyRepository.save(faculty);
+                })
+                .orElse(null);
     }
 
     public List<Faculty> sortByColor(String color)
