@@ -52,19 +52,21 @@ public class FacultyService
                 .orElse(null);
     }
 
-    public List<Faculty> sortByColor(String color)
+    public List<Faculty> findByNameIgnoreCaseOrByColorIgnoreCase (String nameOrColor)
     {
-        return facultyRepository.findByColor(color);
-    }
-
-    public List<Faculty> findByNameIgnoreCaseOrByColorIgnoreCase (String name, String color)
-    {
-        return facultyRepository.findByNameIgnoreCaseOrByColorIgnoreCase(name, color);
+        var tmp = facultyRepository.findByNameIgnoreCase(nameOrColor);
+        if(tmp == null)
+        {
+            tmp = facultyRepository.findByColorIgnoreCase(nameOrColor);
+        }
+        return tmp;
     }
 
     public List<Student> findStudentsByFaculty (Long id)
     {
-        return facultyRepository.findStudentsByFaculty(id);
+        return (List<Student>) facultyRepository.findById(id)
+                .map(Faculty::getStudents)
+                .orElse(null);
     }
 
 

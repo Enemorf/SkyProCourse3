@@ -49,7 +49,6 @@ public class FacultyController
     public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty)
     {
         var tmp = facultyService.changeFaculty(faculty);
-
         if(tmp == null) {
             return ResponseEntity.notFound().build();
         }
@@ -59,26 +58,24 @@ public class FacultyController
     }
 
     @GetMapping
-    public ResponseEntity<List<Faculty>> findFaculty (@RequestParam(required = false) String name,
-                                                      @RequestParam(required = false) String color)
+    public ResponseEntity<List<Faculty>> findFaculty (@RequestParam String nameOrColor)
     {
-        if(color != null)
+        var tmp = facultyService.findByNameIgnoreCaseOrByColorIgnoreCase(nameOrColor);
+        if(tmp == null)
         {
-            if(name != null)
-            {
-                return ResponseEntity.ok(facultyService.findByNameIgnoreCaseOrByColorIgnoreCase(name, color));
-            }
-            return ResponseEntity.ok(facultyService.sortByColor(color));
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(tmp);
     }
 
     @GetMapping("{id}/students")
     public ResponseEntity<List<Student>> getStudentsByFaculty(@PathVariable Long id) {
-        if(facultyService.getFaculty(id) == null)
+
+        var tmp = facultyService.findStudentsByFaculty(id);
+        if(tmp == null)
         {
           return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.findStudentsByFaculty(id));
+        return ResponseEntity.ok(tmp);
     }
 }

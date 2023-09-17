@@ -40,25 +40,26 @@ public class StudentController
     @DeleteMapping("{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id)
     {
-        Student tmpStudent = studentService.getStudent(id);
-        if(tmpStudent == null) {
+        var tmp = studentService.removeStudent(id);
+        if(tmp == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.removeStudent(id));
+        return ResponseEntity.ok(tmp);
     }
 
     @PutMapping
     public ResponseEntity<Student> updateStudent(@RequestBody Student student)
     {
-        if(studentService.getStudent(student.getId()) == null) {
+        var tmp = studentService.changeStudent(student);
+        if(tmp == null)
+        {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.changeStudent(student));
+        return ResponseEntity.ok(tmp);
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getStudents (@RequestParam(required = false) Integer minAge,
-                                                      @RequestParam(required = false) Integer maxAge)
+    public ResponseEntity<List<Student>> getStudents (@RequestParam Integer minAge, @RequestParam Integer maxAge)
     {
         if(minAge != null)
         {
@@ -72,12 +73,13 @@ public class StudentController
     }
 
     @GetMapping("{id}/faculty")
-    public ResponseEntity<Faculty> findFacultyByStudent (@PathVariable Long id)
+    public ResponseEntity<Faculty> findFacultyByStudent(@PathVariable Long id)
     {
-        if(studentService.getStudent(id) == null)
-        {
+        var tmp = studentService.findStudentsFaculty(id);
+
+        if(tmp == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.findStudentsFaculty(id));
+        return ResponseEntity.ok(tmp);
     }
 }
