@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -39,25 +40,46 @@ public class StudentController
     @DeleteMapping("{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id)
     {
-        Student tmpStudent = studentService.getStudent(id);
-        if(tmpStudent == null) {
+        var tmp = studentService.removeStudent(id);
+        if(tmp == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.removeStudent(id));
+        return ResponseEntity.ok(tmp);
     }
 
     @PutMapping
     public ResponseEntity<Student> updateStudent(@RequestBody Student student)
     {
-        if(studentService.getStudent(student.getId()) == null) {
+        var tmp = studentService.changeStudent(student);
+        if(tmp == null)
+        {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.changeStudent(student));
+        return ResponseEntity.ok(tmp);
     }
 
-    @GetMapping("/sortByAge")
-    public List<Student> getStudentByAge (@RequestParam(name = "age") int age)
+    @GetMapping
+    public ResponseEntity<List<Student>> getStudents (@RequestParam Integer minAge, @RequestParam Integer maxAge)
     {
-        return studentService.sortByAge(age);
+        if(minAge != null)
+        {
+            if(maxAge != null)
+            {
+                return ResponseEntity.ok(studentService.findByAgeBetween(minAge, maxAge));
+            }
+            return ResponseEntity.ok(studentService.sortByAge(minAge));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("{id}/faculty")
+    public ResponseEntity<Faculty> findFacultyByStudent(@PathVariable Long id)
+    {
+        var tmp = studentService.findStudentsFaculty(id);
+
+        if(tmp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
     }
 }

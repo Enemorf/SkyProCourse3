@@ -15,11 +15,16 @@ public class Student
     private String name;
     private int age;
 
-    public Student (Long id, String name, int age)
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
+
+    public Student(Long id, String name, int age, Faculty faculty)
     {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.faculty = faculty;
     }
 
     public Student() {}

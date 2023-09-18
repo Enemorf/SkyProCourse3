@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
@@ -48,7 +49,6 @@ public class FacultyController
     public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty)
     {
         var tmp = facultyService.changeFaculty(faculty);
-
         if(tmp == null) {
             return ResponseEntity.notFound().build();
         }
@@ -57,9 +57,25 @@ public class FacultyController
         }
     }
 
-    @GetMapping("/sortByColor")
-    public List<Faculty> sortByColor(@RequestParam(name = "color") String color)
+    @GetMapping
+    public ResponseEntity<List<Faculty>> findFaculty (@RequestParam String nameOrColor)
     {
-        return facultyService.sortByColor(color);
+        var tmp = facultyService.findByNameIgnoreCaseOrByColorIgnoreCase(nameOrColor);
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping("{id}/students")
+    public ResponseEntity<List<Student>> getStudentsByFaculty(@PathVariable Long id) {
+
+        var tmp = facultyService.findStudentsByFaculty(id);
+        if(tmp == null)
+        {
+          return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
     }
 }

@@ -3,6 +3,8 @@ package ru.hogwarts.school.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Entity
 public class Faculty
@@ -15,10 +17,17 @@ public class Faculty
     private String name;
     private String color;
 
-    public Faculty (Long id, String name, String color)
+    @OneToMany(mappedBy = "faculty")
+    private Set<Student> students;
+
+    public Faculty (Long id, String name, String color, Set<Student> students)
     {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.students = students;
+    }
+
+    public Faculty(){
     }
 }
