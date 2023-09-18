@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,17 +55,12 @@ public class FacultyService
 
     public List<Faculty> findByNameIgnoreCaseOrByColorIgnoreCase (String nameOrColor)
     {
-        var tmp = facultyRepository.findByNameIgnoreCase(nameOrColor);
-        if(tmp == null)
-        {
-            tmp = facultyRepository.findByColorIgnoreCase(nameOrColor);
-        }
-        return tmp;
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase (nameOrColor,nameOrColor);
     }
 
-    public List<Student> findStudentsByFaculty (Long id)
+    public Collection<Student> findStudentsByFaculty (Long id)
     {
-        return (List<Student>) facultyRepository.findById(id)
+        return  facultyRepository.findById(id)
                 .map(Faculty::getStudents)
                 .orElse(null);
     }
