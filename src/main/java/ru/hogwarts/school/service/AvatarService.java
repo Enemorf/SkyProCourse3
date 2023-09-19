@@ -21,8 +21,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarService
 {
-    @Value("${path.to.avatars.folder}")
-    private String covers;
+    @Value("${avatars.dir.path}")
+    private String avatarsDir;
     private final AvatarRepository avatarRepository;
     private final StudentService studentService;
 
@@ -31,61 +31,36 @@ public class AvatarService
         this.avatarRepository = avatarRepository;
         this.studentService = studentService;
     }
+    public Avatar findAvatar(long studentId) {
+        return avatarRepository.findByStudentId(studentId).orElseThrow();
+    }
+    public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        Student student = studentService.findStudent(studentId);
 
-    public void uploadAvatar(Long id, MultipartFile file) throws IOException
-    {
-        Student student = studentService.getStudent(id);
-
-        Path filePath = Path.of(covers,id + "." + getExtention(Objects.requireNonNull(file.getOriginalFilename())));
-        Files.createDirectory(filePath.getParent());
+        Path filePath = Path.of(avatarsDir, studentId + "." + getExtension(file.getOriginalFilename()));
+        Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
 
         try (InputStream is = file.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath,CREATE_NEW);
+             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os,1024);
-        )
-        {
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
             bis.transferTo(bos);
         }
 
-        Avatar avatar = findAvatarID(id);
+        Avatar avatar = avatarRepository.findByStudentId(studentId).orElseGet(Avatar::new);
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(file.getSize());
         avatar.setMediaType(file.getContentType());
-        avatar.setData(generateImage(filePath));
+        avatar.setData(file.getBytes());
 
         avatarRepository.save(avatar);
     }
 
-    public Avatar findAvatarID(Long id)
-    {
-        return avatarRepository.findById(id).orElseThrow();
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    private String getExtention(String fileName)
-    {
-        return fileName.substring(fileName.lastIndexOf(".")+1);
-    }
-
-    private byte[] generateImage(Path filePath) throws IOException
-    {
-        try(
-                InputStream is = Files.newInputStream(filePath);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream())
-        {
-            BufferedImage image = ImageIO.read(bis);
-
-            int height = image.getHeight() / (image.getWidth() / 100);
-            BufferedImage preview = new BufferedImage(100, height,image.getType());
-            Graphics2D graphics = preview.createGraphics();
-            graphics.drawImage(image,0,0,100,height,null);
-            graphics.dispose();
-
-            ImageIO.write(preview,getExtention(filePath.getFileName().toString()),baos);
-            return baos.toByteArray();
-        }
-    }
 }
