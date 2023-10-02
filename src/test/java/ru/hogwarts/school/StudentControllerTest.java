@@ -8,12 +8,11 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 
-@SpringBootTest (webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HogwardsSchoolApplicationTests
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class StudentControllerTest
 {
     @LocalServerPort
     private int port;
@@ -95,5 +94,4 @@ class HogwardsSchoolApplicationTests
         Assertions.assertThat(this.testRestTemplate.exchange("http://localhost:" + port + "/student/"+id,
                 HttpMethod.DELETE, HttpEntity.EMPTY,String.class)).isNotNull();
     }
-
 }

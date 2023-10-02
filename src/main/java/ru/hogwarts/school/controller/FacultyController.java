@@ -27,7 +27,7 @@ public class FacultyController
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> getStudent(@PathVariable Long id)
+    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id)
     {
         var tmpFaculty = facultyService.getFaculty(id);
         if(tmpFaculty == null) {
@@ -37,7 +37,7 @@ public class FacultyController
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Faculty> deleteStudent(@PathVariable Long id)
+    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id)
     {
         var tmpFaculty = facultyService.getFaculty(id);
         if(tmpFaculty == null) {
@@ -47,7 +47,7 @@ public class FacultyController
     }
 
     @PutMapping
-    public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty)
+    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty)
     {
         var tmp = facultyService.changeFaculty(faculty);
         if(tmp == null) {
@@ -59,7 +59,7 @@ public class FacultyController
     }
 
     @GetMapping
-    public ResponseEntity<List<Faculty>> findFaculty (@RequestParam String nameOrColor)
+    public ResponseEntity<List<Faculty>> findFaculty(@RequestParam String nameOrColor)
     {
         var tmp = facultyService.findByNameIgnoreCaseOrByColorIgnoreCase(nameOrColor);
         if(tmp == null)
