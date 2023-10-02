@@ -37,7 +37,6 @@ public class StudentControllerTest
 
     @MockBean
     private StudentRepository studentRepository;
-
     @MockBean
     private FacultyRepository facultyRepository;
     @MockBean
