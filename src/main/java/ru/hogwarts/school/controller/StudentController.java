@@ -44,7 +44,7 @@ public class StudentController
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getStudents (@RequestParam Integer minAge, @RequestParam Integer maxAge)
+    public ResponseEntity<List<Student>> getStudents(@RequestParam Integer minAge, @RequestParam Integer maxAge)
     {
         if(minAge != null)
         {
