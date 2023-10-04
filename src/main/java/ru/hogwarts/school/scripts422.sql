@@ -1,0 +1,15 @@
+CREATE TABLE drivers (
+    id_drive INTEGER PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    age INTEGER DEFAULT 20 NOT NULL CHECK ( age > 18 ),
+    haveLicense BOOLEAN DEFAULT TRUE,
+    carID INTEGER REFERENCES cars(id_car)
+);
+
+CREATE TABLE cars (
+    id_car INTEGER PRIMARY KEY,
+    mark VARCHAR(200) NOT NULL,
+    model VARCHAR(200) NOT NULL,
+    cost NUMERIC(9,2) NOT NULL
+);
+
