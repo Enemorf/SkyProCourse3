@@ -134,5 +134,48 @@ public class StudentController
 
     avatarService.uploadAvatar(id, avatar);
     return ResponseEntity.ok().build();
-}
+    }
+
+    @GetMapping(value = "/all")
+    public ResponseEntity<Integer> findAllStudents()
+    {
+        var tmp = studentService.findAllStudents();
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+    @GetMapping(value = "/avg")
+    public ResponseEntity<Double> findAVGStudents()
+    {
+        var tmp = studentService.findAVGStudents();
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping(value = "/findFive")
+    public ResponseEntity<List<Student>> findFiveLastStudents()
+    {
+        var tmp = studentService.findFiveLastStudents();
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping(value = "/avatar")
+    public ResponseEntity<List<Avatar>> findAll(@RequestParam("page") Integer page, @RequestParam("size") Integer size)
+    {
+        var tmp = avatarService.findAll(page, size);
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
 }
