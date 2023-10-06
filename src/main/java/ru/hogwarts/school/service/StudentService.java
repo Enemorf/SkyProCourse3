@@ -72,5 +72,20 @@ public class StudentService
         return studentRepository.findById(id).orElseThrow();
     }
 
+    public Integer findAllStudents()
+    {
+        return studentRepository.findAllStudents();
+    }
+
+    public Double findAVGStudents()
+    {
+        return studentRepository.findAVGStudents();
+    }
+
+    public List<Student> findFiveLastStudents()
+    {
+        return studentRepository.findFiveLastStudents();
+    }
+
 
 }
