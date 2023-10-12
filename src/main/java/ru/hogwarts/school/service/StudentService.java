@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
@@ -13,6 +15,7 @@ import java.util.List;
 public class StudentService
 {
     private final StudentRepository studentRepository;
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository studentRepository)
     {
@@ -21,16 +24,19 @@ public class StudentService
 
     public Student addStudent(Student student)
     {
+        logger.info("Get Method AddStudent");
         return studentRepository.save(student);
     }
 
     public Student getStudent(Long id)
     {
+        logger.info("Get Method GetStudent");
         return studentRepository.findById(id).orElse(null);
     }
 
     public Student removeStudent(Long id)
     {
+        logger.info("Get Method RemoveStudent");
         return studentRepository.findById(id)
                 .map(student -> {
                     studentRepository.deleteById(student.getId());
@@ -41,6 +47,7 @@ public class StudentService
 
     public Student changeStudent(Student newStudent)
     {
+        logger.info("Get Method ChangeStudent");
         return studentRepository.findById(newStudent.getId())
                 .map( student ->
                 {
@@ -53,37 +60,44 @@ public class StudentService
 
     public List<Student> sortByAge(int age)
     {
+        logger.info("Get Method SortByAge");
         return studentRepository.findByAge(age);
     }
 
     public List<Student> findByAgeBetween (int minAge, int maxAge)
     {
+        logger.info("Get Method FindByAgeBetween");
         return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
     public Faculty findStudentsFaculty(Long id)
     {
+        logger.info("Get Method FindStudentsFaculty");
         return studentRepository.findById(id)
                 .map(Student::getFaculty)
                 .orElse(null);
     }
 
     public Student findStudent(long id) {
+        logger.info("Get Method FindStudent");
         return studentRepository.findById(id).orElseThrow();
     }
 
     public Integer findAllStudents()
     {
+        logger.info("Get Method FindAllStudents");
         return studentRepository.findAllStudents();
     }
 
     public Double findAVGStudents()
     {
+        logger.info("Get Method FindAVGStudents");
         return studentRepository.findAVGStudents();
     }
 
     public List<Student> findFiveLastStudents()
     {
+        logger.info("Get Method FindFiveLastStudents");
         return studentRepository.findFiveLastStudents();
     }
 
