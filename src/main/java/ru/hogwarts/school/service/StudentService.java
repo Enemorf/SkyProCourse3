@@ -10,6 +10,11 @@ import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class StudentService
@@ -89,10 +94,34 @@ public class StudentService
         return studentRepository.findAllStudents();
     }
 
+    public List<Student> findAllStudentLitterAUpCase()
+    {
+        logger.info("Get Method FindAllStudentLitterAUpCase");
+        return studentRepository.findAll()
+                .stream()
+                .parallel()
+                .filter(student -> student.getName().toUpperCase().startsWith("A"))
+                .sorted()
+                .collect(toList());
+    }
+
+
     public Double findAVGStudents()
     {
         logger.info("Get Method FindAVGStudents");
         return studentRepository.findAVGStudents();
+
+    }
+
+    public Double findAVGStudentsStream()
+    {
+        logger.info("Get Method FindAVGStudentsStream");
+        return studentRepository.findAll()
+                .stream()
+                .parallel()
+                .mapToInt(std -> std.getAge())
+                .average()
+                .getAsDouble();
     }
 
     public List<Student> findFiveLastStudents()
@@ -102,4 +131,9 @@ public class StudentService
     }
 
 
+    public Integer getBestRes()
+    {
+        //return Stream.iterate(1, a-> a+1).limit(1_000_000).reduce(0,(a,b) -> a+b);
+        return IntStream.rangeClosed(1,1_000_000).sum();
+    }
 }
