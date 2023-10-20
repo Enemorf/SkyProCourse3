@@ -146,6 +146,29 @@ public class StudentController
         }
         return ResponseEntity.ok(tmp);
     }
+
+    @GetMapping(value = "/allA")
+    public ResponseEntity<List<Student>> findAllStudentLitterAUpCase()
+    {
+        var tmp = studentService.findAllStudentLitterAUpCase();
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping(value = "/avgStream")
+    public ResponseEntity<Double> findAVGStudentsStream()
+    {
+        var tmp = studentService.findAVGStudentsStream();
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
     @GetMapping(value = "/avg")
     public ResponseEntity<Double> findAVGStudents()
     {
@@ -172,6 +195,17 @@ public class StudentController
     public ResponseEntity<List<Avatar>> findAll(@RequestParam("page") Integer page, @RequestParam("size") Integer size)
     {
         var tmp = avatarService.findAll(page, size);
+        if(tmp == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping(value = "/parallell")
+    public ResponseEntity<Integer> getBestRes()
+    {
+        var tmp = studentService.getBestRes();
         if(tmp == null)
         {
             return ResponseEntity.notFound().build();
