@@ -136,4 +136,47 @@ public class StudentService
         //return Stream.iterate(1, a-> a+1).limit(1_000_000).reduce(0,(a,b) -> a+b);
         return IntStream.rangeClosed(1,1_000_000).sum();
     }
+
+    public void getParallelSOUT()
+    {
+        List<String> studentsName = studentRepository.findFirstFiveStudentsName();
+        System.out.println(studentsName.get(0));
+        System.out.println(studentsName.get(1));
+
+        new Thread(()->
+        {
+            System.out.println(studentsName.get(2));
+            System.out.println(studentsName.get(3));
+        }).start();
+
+        new Thread(()->
+        {
+            System.out.println(studentsName.get(4));
+            System.out.println(studentsName.get(5));
+        }).start();
+    }
+
+    public void getSynchronizedSOUT() {
+        List<String> studentsName = studentRepository.findFirstFiveStudentsName();
+        Object lock = new Object();
+
+        synchronizedSOUT(studentsName.get(0));
+        synchronizedSOUT(studentsName.get(1));
+
+            new Thread(() -> {
+                synchronizedSOUT(studentsName.get(2));
+                synchronizedSOUT(studentsName.get(3));
+            }).start();
+            new Thread(() -> {
+                synchronizedSOUT(studentsName.get(4));
+                synchronizedSOUT(studentsName.get(5));
+            }).start();
+
+    }
+
+    private synchronized void synchronizedSOUT(String output)
+    {
+        System.out.println(output);
+    }
+
 }

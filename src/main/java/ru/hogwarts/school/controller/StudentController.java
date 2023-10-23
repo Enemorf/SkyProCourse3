@@ -13,8 +13,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
-import java.awt.font.MultipleMaster;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -211,5 +209,19 @@ public class StudentController
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(tmp);
+    }
+
+    @GetMapping(value = "/step1")
+    public ResponseEntity.BodyBuilder getParallelSOUT()
+    {
+       studentService.getParallelSOUT();
+       return ResponseEntity.ok();
+    }
+
+    @GetMapping(value = "/step2")
+    public ResponseEntity.BodyBuilder getSynchronizedSOUT()
+    {
+        studentService.getSynchronizedSOUT();
+        return ResponseEntity.ok();
     }
 }
