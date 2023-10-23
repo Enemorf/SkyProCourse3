@@ -160,21 +160,23 @@ public class StudentService
         List<String> studentsName = studentRepository.findFirstFiveStudentsName();
         Object lock = new Object();
 
-        System.out.println(studentsName.get(0));
-        System.out.println(studentsName.get(1));
+        synchronizedSOUT(studentsName.get(0));
+        synchronizedSOUT(studentsName.get(1));
 
-        synchronized (lock) {
             new Thread(() -> {
-                System.out.println(studentsName.get(2));
-                System.out.println(studentsName.get(3));
+                synchronizedSOUT(studentsName.get(2));
+                synchronizedSOUT(studentsName.get(3));
             }).start();
-        }
-        synchronized (lock) {
             new Thread(() -> {
-                System.out.println(studentsName.get(4));
-                System.out.println(studentsName.get(5));
+                synchronizedSOUT(studentsName.get(4));
+                synchronizedSOUT(studentsName.get(5));
             }).start();
-        }
+
+    }
+
+    private synchronized void synchronizedSOUT(String output)
+    {
+        System.out.println(output);
     }
 
 }
